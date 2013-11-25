@@ -24,9 +24,9 @@ public class EntailmentTester {
 		
 		try {
 			Scanner file = new Scanner(new File(knowledgeBase));
-			while(file.hasNext()) {
-				System.out.println(file.nextLine());
-			}
+//			while(file.hasNext()) {
+//				System.out.println(file.nextLine());
+//			}
 			
 			if (entailmentType.equals("forward")) {
 				System.out.println("TODO: Forward Chaining");
@@ -45,19 +45,26 @@ public class EntailmentTester {
 	}
 	
 	public static boolean forwardChaining(Scanner file, String symbol) {
+		System.out.println("in forward chaining");
 		
 		symbol = symbol.toUpperCase();
 		
 		String line;
-		
-		
-		while (true) {
+		System.out.println(file.hasNextLine());
+		while (file.hasNextLine()) {
 			line = file.nextLine();
 			if(line == null) {
+				System.out.println("in break");
 				break;
 			}
+			System.out.println("creating tokens");
 			String[] tokens = line.split("=>");
+			for(int i = 0; i < tokens.length; i++) {
+				System.out.println(tokens[i]);
+			}
 		}
+		
+		System.out.println("returning");
 		
 		return false;
 		
