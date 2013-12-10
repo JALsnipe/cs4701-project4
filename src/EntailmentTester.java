@@ -2,8 +2,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.List;
 import java.util.Scanner;
 import java.util.Stack;
 
@@ -88,8 +86,8 @@ public class EntailmentTester {
 						System.out.println("in token[1] == 1");
 						System.out.println(line);
 						count.put(line, 1);
-						inferred.put(tokens[0], null);
-						agenda.push(tokens[0]);
+						inferred.put(tokens[0].replaceAll("\\s+",""), null);
+						agenda.push(tokens[0].replaceAll("\\s+",""));
 					}
 					System.out.println("printing tokens:");
 					System.out.println(tokens[i]);
@@ -101,7 +99,7 @@ public class EntailmentTester {
 				}
 				
 				inferred.put(tokens[1], null); // adding the second token as null to inferred
-				agenda.push(tokens[1]); // push second token to agenda
+				agenda.push(tokens[1].replaceAll("\\s+","")); // push second token to agenda
 				System.out.println("done parsing second token");
 				if(tokens[0].contains("^")) {
 					tokens2 = tokens[0].split("\\^"); // splitting by ^ (and) symbol
@@ -111,7 +109,7 @@ public class EntailmentTester {
 					}
 					System.out.println("end print tokens2");
 					for(int i = 0; i < tokens2.length; i++) {
-						agenda.push(tokens2[i]);
+						agenda.push(tokens2[i].replaceAll("\\s+",""));
 					}
 					int x = tokens2.length;
 					count.put(line, x); // should I remove all whitespace here?
@@ -148,48 +146,55 @@ public class EntailmentTester {
 		// list of horn clauses is ArrayList kb
 		// START ALGORITHM
 		System.out.println("start of algorithm");
-		System.out.println("agenda.size(): " + agenda.size());
+//		System.out.println("agenda.size(): " + agenda.size());
 		while (agenda.size() != 0) {
 			//				Symbol p = agenda.pop();
 			String p = agenda.pop();
-			System.out.println("agenda.pop(): " + p);
+//			if(inferred.get(p) == Boolean.TRUE) {
+//				System.out.println(p);
+//			}
 //			while (!inferredBool(p, inferred)) {
 			while (inferred.get(p) == null) {
 //			while (inferred(p, null)) {
-				System.out.println("reached?");
+//				System.out.println("reached?");
 				inferred.put(p, Boolean.TRUE);
-				System.out.println(p + " should now be true: " + inferred.get(p));
+				if(inferred.get(p) == Boolean.TRUE) {
+					System.out.println(p);
+				}
+//				System.out.println(p + " should now be true: " + inferred.get(p));
 				
-				System.out.println("kb.size(): " + kb.size());
+//				System.out.println("kb.size(): " + kb.size());
 				for (int i = 0; i < kb.size(); i++) {
 					String hornClause = kb.get(i);
-					System.out.println("hornClause: " + hornClause);
+//					System.out.println("hornClause: " + hornClause);
 					if (hornClause.contains(p)) {
-						System.out.println(hornClause + " contains " + p);
+//						System.out.println(hornClause);
 						decrementCount(hornClause, count);
-						System.out.println("count.get(hornClause): " + count.get(hornClause));
+//						System.out.println("count.get(hornClause): " + count.get(hornClause));
 						if (countisZero(hornClause, count)) { // count.get(hornClause) == 0
-							System.out.println("count is 0");
-							System.out.println("hornClause: " + hornClause);
+//							System.out.println("count is 0");
+							System.out.println(hornClause);
 							String[] temp = hornClause.split("=>");
 							if(temp.length == 2) {
-								System.out.println("temp length is 2");
+//								System.out.println("temp length is 2");
 //								System.out.println(temp[1]);
 								String parsed = temp[1].replaceAll("\\s+","");
-								System.out.println("parsed: " + parsed);
-								System.out.println("symbol: " + symbol);
+//								System.out.println("parsed: " + parsed);
+//								System.out.println("symbol: " + symbol);
 								if (parsed.equals(symbol)) {
+//									System.out.println("last");
+//									System.out.println(hornClause);
 									return true;
 //									System.out.println("true");
 								} else {
-									agenda.push(temp[1]);
+									agenda.push(temp[1].replaceAll("\\s+",""));
 								}
 							}
 							if(temp.length == 1) {
 								if (temp[0].equals(symbol)) {
 									return true;
 								} else {
-									agenda.push(temp[0]);
+									agenda.push(temp[0].replaceAll("\\s+",""));
 								}
 							}
 						}
@@ -240,12 +245,6 @@ public class EntailmentTester {
 		//
 //		return false;
 		//
-
-	private static boolean inferredBool(String p, HashMap<String, Boolean> inferred) {
-		Object value = inferred.get(p);
-		System.out.println("inferred value: " + value);
-		return ((value == null) || value.equals(Boolean.TRUE));
-	}
 	
 	private static void decrementCount(String hornClause, HashMap<String, Integer> count) {
 		int value = (count.get(hornClause)).intValue();
