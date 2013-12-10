@@ -37,6 +37,7 @@ public class EntailmentTester {
 
 			if (entailmentType.equals("backward")) {
 				System.out.println("TODO: Backward Chaining");
+				System.out.println(backwardChaining(file, symbol));
 			}
 
 		} catch (FileNotFoundException e) {
@@ -151,16 +152,16 @@ public class EntailmentTester {
 			//				Symbol p = agenda.pop();
 			String p = agenda.pop();
 //			if(inferred.get(p) == Boolean.TRUE) {
-//				System.out.println(p);
+			System.out.println(p);
 //			}
 //			while (!inferredBool(p, inferred)) {
 			while (inferred.get(p) == null) {
 //			while (inferred(p, null)) {
 //				System.out.println("reached?");
 				inferred.put(p, Boolean.TRUE);
-				if(inferred.get(p) == Boolean.TRUE) {
-					System.out.println(p);
-				}
+//				if(inferred.get(p) == Boolean.TRUE) {
+//					System.out.println(p);
+//				}
 //				System.out.println(p + " should now be true: " + inferred.get(p));
 				
 //				System.out.println("kb.size(): " + kb.size());
@@ -206,6 +207,153 @@ public class EntailmentTester {
 //		System.out.println("false");
 	} //END
 		
+	
+	public static boolean backwardChaining(Scanner file, String symbol){
+		
+		System.out.println("in backward chaining");
+		System.out.println("setup");
+
+		symbol = symbol.toUpperCase();
+
+		// read all lines into string array list for KB
+		// iterate through list and parse lines
+		// unknown symbols have no whitespaces/are on the left side of =>
+
+		//ArrayList<String> lines = new ArrayList<String>();
+
+		HashMap<String, Integer> count = new HashMap<String, Integer>(); // Horn Clause
+		HashMap<String, Boolean> inferred = new HashMap<String, Boolean>(); // Symbol
+		Stack<String> agenda = new Stack<String>(); // Symbol
+		String[] tokens;
+		String[] tokens2;
+
+		ArrayList<String> kb = new ArrayList<String>();
+		String line = new String();
+		System.out.println(file.hasNextLine());
+		while (file.hasNextLine()) {
+			line = file.nextLine();
+
+			if(line == null) {
+				System.out.println("in break");
+				break;
+			}
+			if(line.contains("=>")) {
+				kb.add(line);
+			}
+			// start parsing			
+			if(line.contains("=>")) {
+				tokens = line.split("=>");
+				for(int i = 0; i < tokens.length; i++) { // split tokens, remove whitespace
+					System.out.println("removing whitespace");
+					tokens[i] = tokens[i].replaceAll("\\s+","");
+					if(tokens[0].length() == 1) { // for a case like P => Q
+						System.out.println("in token[1] == 1");
+						System.out.println(line);
+						count.put(line, 1);
+						inferred.put(tokens[0].replaceAll("\\s+",""), null);
+						agenda.push(tokens[0].replaceAll("\\s+",""));
+					}
+					System.out.println("printing tokens:");
+					System.out.println(tokens[i]);
+				}
+				System.out.println("end print tokens");
+				System.out.println(tokens.length);
+				for(int i = 0; i < tokens.length; i++) {
+					System.out.println("printing token " + i + ": " + tokens[i]);
+				}
+				
+				inferred.put(tokens[1], null); // adding the second token as null to inferred
+				agenda.push(tokens[1].replaceAll("\\s+","")); // push second token to agenda
+				System.out.println("done parsing second token");
+				if(tokens[0].contains("^")) {
+					tokens2 = tokens[0].split("\\^"); // splitting by ^ (and) symbol
+					System.out.println("print tokens2");
+					for(int i = 0; i < tokens2.length; i++) {
+						System.out.println(tokens2[i]);
+					}
+					System.out.println("end print tokens2");
+					for(int i = 0; i < tokens2.length; i++) {
+						agenda.push(tokens2[i].replaceAll("\\s+",""));
+					}
+					int x = tokens2.length;
+					count.put(line, x); // should I remove all whitespace here?
+				}
+			}
+			if(!line.contains("=>")) {
+				count.put(line, 0);
+				inferred.put(line, null);
+			}
+		}
+		
+		// all data structures should be populated now
+		// Use this to test if the data structures are being populated correctly
+//		System.out.println("printing count");
+//		System.out.println(count.toString());
+//		
+//		System.out.println("printing inferred");
+//		System.out.println(inferred.toString());
+//		
+//		System.out.println("printing agenda");
+//		System.out.println(agenda.size());		
+//		while (!agenda.isEmpty()){
+//		    System.out.println(agenda.peek());
+//		    agenda.pop();
+//		}
+		
+//		return true;
+		
+		System.out.println("check kb");
+		for(int i = 0; i < kb.size(); i++) {
+			System.out.println(kb.get(i));
+		}
+		
+		// list of horn clauses is ArrayList kb
+		// START ALGORITHM
+		System.out.println("start of algorithm");
+		// while the list of symbols are not empty
+		while (agenda.size() != 0) {
+			// get current symbol
+			String p = agenda.pop();
+			System.out.println(p);
+			// add the entailed array
+//			entailed.add(q);
+			
+			// if this element is a fact then we dont need to go further
+			while (inferred.get(p) == null) {
+				// .. but it isnt so..
+				// create array to hold new symbols to be processed 
+				ArrayList<String> b = new ArrayList<String>();
+				for(int i=0;i<kb.size();i++){
+				// for each clause..
+						if (kb.get(i).contains(symbol)) {
+						// that contains the symbol as its conclusion
+						
+								ArrayList<String> temp = getPremises(clauses.get(i));
+								for(int j=0;j<temp.size();j++){
+									// add the symbols to a temp array
+									b.add(temp.get(j));
+								}
+							}						
+				}
+				// no symbols were generated and since it isnt a fact either 
+				// then this sybmol and eventually ASK  cannot be implied by TELL
+				if (b.size()==0){
+					return false;
+				}
+				else{
+						// there are symbols so check for previously processed ones and add to agenda
+						for(int i=0;i<b.size();i++){
+								if (!entailed.contains(b.get(i)))
+										agenda.add(b.get(i));
+								}
+		
+
+				}
+			}
+			
+		}//while end
+		return true;
+	}
 
 //		//		public boolean plfcEntails(KnowledgeBase kb, Symbol q) {
 //		boolean plfcEntails(ArrayList<String> kb, String q) {
