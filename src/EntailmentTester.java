@@ -75,7 +75,9 @@ public class EntailmentTester {
 				System.out.println("in break");
 				break;
 			}
-			kb.add(line);
+			if(line.contains("=>")) {
+				kb.add(line);
+			}
 			// start parsing			
 			if(line.contains("=>")) {
 				tokens = line.split("=>");
@@ -129,28 +131,57 @@ public class EntailmentTester {
 //		    agenda.pop();
 //		}
 		
+		System.out.println("check kb");
+		for(int i = 0; i < kb.size(); i++) {
+			System.out.println(kb.get(i));
+		}
+		
 		// list of horn clauses is ArrayList kb
 		// START ALGORITHM
 		System.out.println("start of algorithm");
+		System.out.println("agenda.size(): " + agenda.size());
 		while (agenda.size() != 0) {
 			//				Symbol p = agenda.pop();
 			String p = agenda.pop();
-			System.out.println(p);
-			while (!inferred(p, inferred)) {
+			System.out.println("agenda.pop(): " + p);
+//			while (!inferredBool(p, inferred)) {
+			while (inferred.get(p) == null) {
+//			while (inferred(p, null)) {
+				System.out.println("reached?");
 				inferred.put(p, Boolean.TRUE);
-
+				System.out.println(p + " should now be true: " + inferred.get(p));
+				
+				System.out.println("kb.size(): " + kb.size());
 				for (int i = 0; i < kb.size(); i++) {
 					String hornClause = kb.get(i);
-					System.out.println(hornClause);
+					System.out.println("hornClause: " + hornClause);
 					if (hornClause.contains(p)) {
+						System.out.println(hornClause + " contains " + p);
 						decrementCount(hornClause, count);
-						if (countisZero(hornClause, count)) {
-							String[] temp = line.split("=>");
-							if (temp[1].equals(symbol)) {
-								return true;
-//								System.out.println("true");
-							} else {
-								agenda.push(temp[1]);
+						System.out.println("count.get(hornClause): " + count.get(hornClause));
+						if (countisZero(hornClause, count) || count.get(hornClause) < 0) { // count.get(hornClause) == 0
+							System.out.println("count is 0");
+							System.out.println("hornClause: " + hornClause);
+							String[] temp = hornClause.split("=>");
+							if(temp.length == 2) {
+								System.out.println("temp length is 2");
+//								System.out.println(temp[1]);
+								String parsed = temp[1].replaceAll("\\s+","");
+								System.out.println("parsed: " + parsed);
+								System.out.println("symbol: " + symbol);
+								if (parsed.equals(symbol)) {
+									return true;
+//									System.out.println("true");
+								} else {
+									agenda.push(temp[1]);
+								}
+							}
+							if(temp.length == 1) {
+								if (temp[0].equals(symbol)) {
+									return true;
+								} else {
+									agenda.push(temp[0]);
+								}
 							}
 						}
 					}
@@ -201,8 +232,9 @@ public class EntailmentTester {
 		//
 	}
 
-	private static boolean inferred(String p, HashMap<String, Boolean> inferred) {
+	private static boolean inferredBool(String p, HashMap<String, Boolean> inferred) {
 		Object value = inferred.get(p);
+		System.out.println("inferred value: " + value);
 		return ((value == null) || value.equals(Boolean.TRUE));
 	}
 	
