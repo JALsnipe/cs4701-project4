@@ -48,7 +48,7 @@ public class EntailmentTester {
 	}
 
 	public static boolean forwardChaining(Scanner file, String symbol) {
-		System.out.println("in forward chaining");
+//		System.out.println("in forward chaining");
 
 		symbol = symbol.toUpperCase();
 
@@ -66,12 +66,12 @@ public class EntailmentTester {
 
 		ArrayList<String> kb = new ArrayList<String>();
 		String line = new String();
-		System.out.println(file.hasNextLine());
+//		System.out.println(file.hasNextLine());
 		while (file.hasNextLine()) {
 			line = file.nextLine();
 
 			if(line == null) {
-				System.out.println("in break");
+//				System.out.println("in break");
 				break;
 			}
 			if(line.contains("=>")) {
@@ -81,34 +81,34 @@ public class EntailmentTester {
 			if(line.contains("=>")) {
 				tokens = line.split("=>");
 				for(int i = 0; i < tokens.length; i++) { // split tokens, remove whitespace
-					System.out.println("removing whitespace");
+//					System.out.println("removing whitespace");
 					tokens[i] = tokens[i].replaceAll("\\s+","");
 					if(tokens[0].length() == 1) { // for a case like P => Q
-						System.out.println("in token[1] == 1");
-						System.out.println(line);
+//						System.out.println("in token[1] == 1");
+//						System.out.println(line);
 						count.put(line, 1);
 						inferred.put(tokens[0].replaceAll("\\s+",""), null);
 						agenda.push(tokens[0].replaceAll("\\s+",""));
 					}
-					System.out.println("printing tokens:");
-					System.out.println(tokens[i]);
+//					System.out.println("printing tokens:");
+//					System.out.println(tokens[i]);
 				}
-				System.out.println("end print tokens");
-				System.out.println(tokens.length);
+//				System.out.println("end print tokens");
+//				System.out.println(tokens.length);
 				for(int i = 0; i < tokens.length; i++) {
-					System.out.println("printing token " + i + ": " + tokens[i]);
+//					System.out.println("printing token " + i + ": " + tokens[i]);
 				}
 				
 				inferred.put(tokens[1], null); // adding the second token as null to inferred
 				agenda.push(tokens[1].replaceAll("\\s+","")); // push second token to agenda
-				System.out.println("done parsing second token");
+//				System.out.println("done parsing second token");
 				if(tokens[0].contains("^")) {
 					tokens2 = tokens[0].split("\\^"); // splitting by ^ (and) symbol
-					System.out.println("print tokens2");
+//					System.out.println("print tokens2");
 					for(int i = 0; i < tokens2.length; i++) {
-						System.out.println(tokens2[i]);
+//						System.out.println(tokens2[i]);
 					}
-					System.out.println("end print tokens2");
+//					System.out.println("end print tokens2");
 					for(int i = 0; i < tokens2.length; i++) {
 						agenda.push(tokens2[i].replaceAll("\\s+",""));
 					}
@@ -139,14 +139,14 @@ public class EntailmentTester {
 		
 //		return true;
 		
-		System.out.println("check kb");
-		for(int i = 0; i < kb.size(); i++) {
-			System.out.println(kb.get(i));
-		}
+//		System.out.println("check kb");
+//		for(int i = 0; i < kb.size(); i++) {
+//			System.out.println(kb.get(i));
+//		}
 		
 		// list of horn clauses is ArrayList kb
 		// START ALGORITHM
-		System.out.println("start of algorithm");
+//		System.out.println("start of algorithm");
 //		System.out.println("agenda.size(): " + agenda.size());
 		while (agenda.size() != 0) {
 			//				Symbol p = agenda.pop();
@@ -251,19 +251,19 @@ public class EntailmentTester {
 					System.out.println("removing whitespace");
 					tokens[i] = tokens[i].replaceAll("\\s+","");
 					if(tokens[0].length() == 1) { // for a case like P => Q
-						System.out.println("in token[1] == 1");
-						System.out.println(line);
+//						System.out.println("in token[1] == 1");
+//						System.out.println(line);
 						count.put(line, 1);
 						inferred.put(tokens[0].replaceAll("\\s+",""), null);
 						agenda.push(tokens[0].replaceAll("\\s+",""));
 					}
-					System.out.println("printing tokens:");
+//					System.out.println("printing tokens:");
 					System.out.println(tokens[i]);
 				}
-				System.out.println("end print tokens");
+//				System.out.println("end print tokens");
 				System.out.println(tokens.length);
 				for(int i = 0; i < tokens.length; i++) {
-					System.out.println("printing token " + i + ": " + tokens[i]);
+//					System.out.println("printing token " + i + ": " + tokens[i]);
 				}
 				
 				inferred.put(tokens[1], null); // adding the second token as null to inferred
