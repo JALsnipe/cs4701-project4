@@ -1,0 +1,83 @@
+COMS W4701 Artificial Intelligence
+Fall 2013
+Assignment 4: Inference Algorithms 
+Due: 11:59:59 EST December 10th 2013 AD
+
+** Please follow the instructions carefully, especially the input format and command line arguments. **
+** Please make sure your code compiles and runs on CLIC machine. We'll not accept submissions that need other environments. **
+
+Write a program which performs entailment via forward and backward chaining.
+
+Representation:
+Symbols: P, Q, A, SYMBOL, etc. 
+Connectives: ^ (and), v (or), => (implication), <=> (mutual implication).
+Negation: ~ (not) 
+
+Your program must accept the following 3 arguments from COMMAND LINE: 
+1) Mode: "forward" or "backward" - indicating which algorithm to use.
+2) The name of a file containing the knowledge base: a list of propositional logic sentences in horn form. White space between symbols/connectives should be ignored.
+3) A propositional logic symbol representing the query to be entailed.
+
+The output of your program will be true if the query can be entailed and false otherwise. Your program should also output all the intermediary propositional logic sentences which are produced as a result of the algorithm.
+
+Your assignment should be well documented and include at least two sample runs for each algorithm with distinct knowledge bases and queries as well as English descriptions of what they represent. In addition to this documentation, submit separate test files for each example.
+ 
+
+** What to submit **
+1. A shell script file named "install" or a Makefile which will compile you code (if needed).
+2. A shell script file named "entail" whilch will accept 3 arguments from the command line, calls and passes those arguments to your program.
+3. A test file for each test run
+4. Documentation
+
+
+Example:
+
+Knowledge base file: KB.txt
+
+P => Q
+L ^ M => P
+B ^ L => M
+A ^ P => L
+A ^ B => L
+A
+B
+
+
+Running the program from command Line:
+$ ./install  (or $ make)
+
+$ ./entail forward KB.txt Q
+A
+B
+A ^ B => L
+B ^ L => M
+L ^ M => P
+P => Q
+--> true
+
+$ ./entail backward KB.txt Q
+P => Q
+L ^ M => P
+A ^ B => L
+B ^ L => M
+A
+B
+--> true
+
+
+Extra Credit (20 points): Add an additional mode to your program which takes any propositional logic sentence in CNF as input performs resolution to entail a query. Each intermediary resolution step should be output along the way.
+
+Example:
+
+KB.txt: 
+
+( ~B v P v M ) ^ ( B v ~P ) ^ ( B v ~M ) ^ ~B
+
+
+$ ./entail CNF KB.txt ~P
+...
+resolve: ( B v ~P) and ~B --> ~P
+resolve: ~P and P --> NULL
+--> true
+
+Your documentation should include a description of your resolution code and at least five sample runs with English descriptions of knowledge base sentences and queries being entailed.
