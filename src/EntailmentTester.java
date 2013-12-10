@@ -9,7 +9,7 @@ public class EntailmentTester {
 
 	public static void main(String[] args) {
 
-		System.out.println(args.length);
+//		System.out.println(args.length);
 
 		if (args.length < 3) {
 			System.out.println("usage: EntailmentTester <forward or backward> "
@@ -152,7 +152,7 @@ public class EntailmentTester {
 			//				Symbol p = agenda.pop();
 			String p = agenda.pop();
 //			if(inferred.get(p) == Boolean.TRUE) {
-			System.out.println(p);
+			System.out.println(p); // don't comment
 //			}
 //			while (!inferredBool(p, inferred)) {
 			while (inferred.get(p) == null) {
@@ -170,11 +170,15 @@ public class EntailmentTester {
 //					System.out.println("hornClause: " + hornClause);
 					if (hornClause.contains(p)) {
 //						System.out.println(hornClause);
+						if(count.get(hornClause) == null) {
+							return false;
+						}
 						decrementCount(hornClause, count);
+//						System.out.println("decrement count");
 //						System.out.println("count.get(hornClause): " + count.get(hornClause));
 						if (countisZero(hornClause, count)) { // count.get(hornClause) == 0
 //							System.out.println("count is 0");
-							System.out.println(hornClause);
+							System.out.println(hornClause); // don't comment
 							String[] temp = hornClause.split("=>");
 							if(temp.length == 2) {
 //								System.out.println("temp length is 2");
