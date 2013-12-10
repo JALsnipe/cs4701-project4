@@ -302,6 +302,19 @@ public class EntailmentTester {
 		
 //		return true;
 		
+		// reverse stack
+		System.out.println("here???");
+		Stack<String> agenda2 = new Stack<String>();
+
+		while (!agenda.isEmpty()) {
+            String s = agenda.pop();
+            agenda2.push(s);
+        }
+//        while (!agenda2.isEmpty()) {
+//            String s = agenda2.pop();
+//            agenda.push(s);
+//        }
+		
 		System.out.println("check kb");
 		for(int i = 0; i < kb.size(); i++) {
 			System.out.println(kb.get(i));
@@ -311,9 +324,10 @@ public class EntailmentTester {
 		// START ALGORITHM
 		System.out.println("start of algorithm");
 		// while the list of symbols are not empty
-		while (agenda.size() != 0) {
+		
+		while (agenda2.size() != 0) {
 			// get current symbol
-			String p = agenda.pop();
+			String p = agenda2.pop();
 			System.out.println(p);
 			// add the entailed array
 //			entailed.add(q);
@@ -323,12 +337,13 @@ public class EntailmentTester {
 				// .. but it isnt so..
 				// create array to hold new symbols to be processed 
 				ArrayList<String> b = new ArrayList<String>();
-				for(int i=0;i<kb.size();i++){
+				for(int i = 0; i < kb.size(); i++) {
 				// for each clause..
+					System.out.println(kb.get(i));
 						if (kb.get(i).contains(symbol)) {
 						// that contains the symbol as its conclusion
 						
-								ArrayList<String> temp = getPremises(clauses.get(i));
+								ArrayList<String> temp = getPremises(kb.get(i), agenda2);
 								for(int j=0;j<temp.size();j++){
 									// add the symbols to a temp array
 									b.add(temp.get(j));
@@ -337,14 +352,15 @@ public class EntailmentTester {
 				}
 				// no symbols were generated and since it isnt a fact either 
 				// then this sybmol and eventually ASK  cannot be implied by TELL
-				if (b.size()==0){
+				if (b.size() == 0) {
+//					System.out.println("b.size() == 0");
 					return false;
 				}
 				else{
 						// there are symbols so check for previously processed ones and add to agenda
 						for(int i=0;i<b.size();i++){
-								if (!entailed.contains(b.get(i)))
-										agenda.add(b.get(i));
+								if (!kb.contains(b.get(i)))
+										agenda2.add(b.get(i));
 								}
 		
 
@@ -394,6 +410,19 @@ public class EntailmentTester {
 //		return false;
 		//
 	
+	private static ArrayList<String> getPremises(String string, Stack<String> agenda) {
+		// get the premise
+		String premise = string.split("=>")[0];
+		ArrayList<String> temp = new ArrayList<String>();
+		String[] conjuncts = premise.split("&");
+		// for each conjunct
+		for(int i=0;i<conjuncts.length;i++){
+			if (!agenda.contains(conjuncts[i]))
+				temp.add(conjuncts[i]);
+		}
+		return temp;
+	}
+
 	private static void decrementCount(String hornClause, HashMap<String, Integer> count) {
 		int value = (count.get(hornClause)).intValue();
 		count.put(hornClause, new Integer(value - 1));
