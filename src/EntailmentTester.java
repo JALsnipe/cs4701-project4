@@ -84,6 +84,13 @@ public class EntailmentTester {
 				for(int i = 0; i < tokens.length; i++) { // split tokens, remove whitespace
 					System.out.println("removing whitespace");
 					tokens[i] = tokens[i].replaceAll("\\s+","");
+					if(tokens[0].length() == 1) { // for a case like P => Q
+						System.out.println("in token[1] == 1");
+						System.out.println(line);
+						count.put(line, 1);
+						inferred.put(tokens[0], null);
+						agenda.push(tokens[0]);
+					}
 					System.out.println("printing tokens:");
 					System.out.println(tokens[i]);
 				}
@@ -92,7 +99,7 @@ public class EntailmentTester {
 				for(int i = 0; i < tokens.length; i++) {
 					System.out.println("printing token " + i + ": " + tokens[i]);
 				}
-//				String temp = tokens[1];
+				
 				inferred.put(tokens[1], null); // adding the second token as null to inferred
 				agenda.push(tokens[1]); // push second token to agenda
 				System.out.println("done parsing second token");
@@ -108,7 +115,6 @@ public class EntailmentTester {
 					}
 					int x = tokens2.length;
 					count.put(line, x); // should I remove all whitespace here?
-					
 				}
 			}
 			if(!line.contains("=>")) {
@@ -118,6 +124,7 @@ public class EntailmentTester {
 		}
 		
 		// all data structures should be populated now
+		// Use this to test if the data structures are being populated correctly
 //		System.out.println("printing count");
 //		System.out.println(count.toString());
 //		
@@ -130,6 +137,8 @@ public class EntailmentTester {
 //		    System.out.println(agenda.peek());
 //		    agenda.pop();
 //		}
+		
+//		return true;
 		
 		System.out.println("check kb");
 		for(int i = 0; i < kb.size(); i++) {
@@ -159,7 +168,7 @@ public class EntailmentTester {
 						System.out.println(hornClause + " contains " + p);
 						decrementCount(hornClause, count);
 						System.out.println("count.get(hornClause): " + count.get(hornClause));
-						if (countisZero(hornClause, count) || count.get(hornClause) < 0) { // count.get(hornClause) == 0
+						if (countisZero(hornClause, count)) { // count.get(hornClause) == 0
 							System.out.println("count is 0");
 							System.out.println("hornClause: " + hornClause);
 							String[] temp = hornClause.split("=>");
@@ -190,6 +199,7 @@ public class EntailmentTester {
 		}
 		return false;
 //		System.out.println("false");
+	} //END
 		
 
 //		//		public boolean plfcEntails(KnowledgeBase kb, Symbol q) {
@@ -230,7 +240,6 @@ public class EntailmentTester {
 		//
 //		return false;
 		//
-	}
 
 	private static boolean inferredBool(String p, HashMap<String, Boolean> inferred) {
 		Object value = inferred.get(p);
