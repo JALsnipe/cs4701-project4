@@ -1,0 +1,9 @@
+KB.txt
+DOUGH ^ CHEESE ^ SAUCE => PIZZA
+LETTUCE
+
+jal2238@prague:~/cs4701/assignment4$ ./entail backward KB.txt PIZZA
+PIZZA
+DOUGH ^ CHEESE ^ SAUCE => PIZZA
+DOUGH ^ CHEESE ^ SAUCE => PIZZA
+--> false

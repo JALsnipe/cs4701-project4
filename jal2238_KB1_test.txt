@@ -1,0 +1,11 @@
+KB.txt
+SLEEPY => GO_TO_BED
+STAY_UP_LATE => SLEEPY
+PLAY_GAMES ^ STAY_UP_LATE => SLEEPY
+PLAY_GAMES => FUN
+I => PLAY_GAMES
+I
+
+jal2238@prague:~/cs4701/assignment4$ ./entail forward KB.txt GO_TO_BED
+PLAY_GAMES
+--> false

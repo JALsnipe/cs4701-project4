@@ -1,0 +1,15 @@
+KB.txt
+EGG ^ COOK => FOOD
+EGG ^ GREEN => SPOILED
+EGG ^ SPOILED ^ COOK => SICK
+EGG ^ KITCHEN => COOK
+EGG
+KITCHEN
+
+jal2238@prague:~/cs4701/assignment4$ ./entail forward KB.txt FOOD
+KITCHEN
+EGG
+EGG ^ KITCHEN => COOK
+COOK
+EGG ^ COOK => FOOD
+--> true
