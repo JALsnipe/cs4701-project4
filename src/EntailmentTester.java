@@ -52,7 +52,6 @@ public class EntailmentTester {
 	 * @return boolean
 	 */
 	public static boolean forwardChaining(Scanner file, String symbol) {
-		//		System.out.println("in forward chaining");
 
 		symbol = symbol.toUpperCase();
 
@@ -70,12 +69,11 @@ public class EntailmentTester {
 
 		ArrayList<String> kb = new ArrayList<String>();
 		String line = new String();
-		//		System.out.println(file.hasNextLine());
 		while (file.hasNextLine()) {
 			line = file.nextLine();
 
 			if(line == null) {
-				//				System.out.println("in break");
+				
 				break;
 			}
 			if(line.contains("=>")) {
@@ -85,34 +83,24 @@ public class EntailmentTester {
 			if(line.contains("=>")) {
 				tokens = line.split("=>");
 				for(int i = 0; i < tokens.length; i++) { // split tokens, remove whitespace
-					//					System.out.println("removing whitespace");
 					tokens[i] = tokens[i].replaceAll("\\s+","");
 					if(tokens[0].length() == 1) { // for a case like P => Q
-						//						System.out.println("in token[1] == 1");
-						//						System.out.println(line);
+
 						count.put(line, 1);
 						inferred.put(tokens[0].replaceAll("\\s+",""), null);
 						agenda.push(tokens[0].replaceAll("\\s+",""));
 					}
-					//					System.out.println("printing tokens:");
-					//					System.out.println(tokens[i]);
+					
 				}
-				//				System.out.println("end print tokens");
-				//				System.out.println(tokens.length);
+
 				for(int i = 0; i < tokens.length; i++) {
-					//					System.out.println("printing token " + i + ": " + tokens[i]);
 				}
 
 				inferred.put(tokens[1], null); // adding the second token as null to inferred
 				agenda.push(tokens[1].replaceAll("\\s+","")); // push second token to agenda
-				//				System.out.println("done parsing second token");
 				if(tokens[0].contains("^")) {
 					tokens2 = tokens[0].split("\\^"); // splitting by ^ (and) symbol
-					//					System.out.println("print tokens2");
-					for(int i = 0; i < tokens2.length; i++) {
-						//						System.out.println(tokens2[i]);
-					}
-					//					System.out.println("end print tokens2");
+					
 					for(int i = 0; i < tokens2.length; i++) {
 						agenda.push(tokens2[i].replaceAll("\\s+",""));
 					}
@@ -127,76 +115,34 @@ public class EntailmentTester {
 		}
 
 		// all data structures should be populated now
-		// Use this to test if the data structures are being populated correctly
-		//		System.out.println("printing count");
-		//		System.out.println(count.toString());
-		//		
-		//		System.out.println("printing inferred");
-		//		System.out.println(inferred.toString());
-		//		
-		//		System.out.println("printing agenda");
-		//		System.out.println(agenda.size());		
-		//		while (!agenda.isEmpty()){
-		//		    System.out.println(agenda.peek());
-		//		    agenda.pop();
-		//		}
 
-		//		return true;
-
-		//		System.out.println("check kb");
-		//		for(int i = 0; i < kb.size(); i++) {
-		//			System.out.println(kb.get(i));
-		//		}
 
 		// list of horn clauses is ArrayList kb
 		// START ALGORITHM
-		//		System.out.println("start of algorithm");
-		//		System.out.println("agenda.size(): " + agenda.size());
-		while (agenda.size() != 0) {
-			//				Symbol p = agenda.pop();
-			String p = agenda.pop();
-			//			if(inferred.get(p) == Boolean.TRUE) {
-			System.out.println(p); // don't comment
-			//			}
-			//			while (!inferredBool(p, inferred)) {
-			while (inferred.get(p) == null) {
-				//			while (inferred(p, null)) {
-				//				System.out.println("reached?");
-				inferred.put(p, Boolean.TRUE);
-				//				if(inferred.get(p) == Boolean.TRUE) {
-				//					System.out.println(p);
-				//				}
-				//				System.out.println(p + " should now be true: " + inferred.get(p));
 
-				//				System.out.println("kb.size(): " + kb.size());
+		while (agenda.size() != 0) {
+			String p = agenda.pop();
+			System.out.println(p); // don't comment
+			while (inferred.get(p) == null) {
+				
+				inferred.put(p, Boolean.TRUE);
+				
 				for (int i = 0; i < kb.size(); i++) {
 					String hornClause = kb.get(i);
-					//					System.out.println("hornClause: " + hornClause);
 					if (hornClause.contains(p)) {
-						//						System.out.println(hornClause);
 						if(count.get(hornClause) == null) {
 							System.out.println("--> false");
 							return false;
 						}
 						decrementCount(hornClause, count);
-						//						System.out.println("decrement count");
-						//						System.out.println("count.get(hornClause): " + count.get(hornClause));
 						if (countIsZero(hornClause, count)) { // count.get(hornClause) == 0
-							//							System.out.println("count is 0");
 							System.out.println(hornClause); // don't comment
 							String[] temp = hornClause.split("=>");
 							if(temp.length == 2) {
-								//								System.out.println("temp length is 2");
-								//								System.out.println(temp[1]);
 								String parsed = temp[1].replaceAll("\\s+","");
-								//								System.out.println("parsed: " + parsed);
-								//								System.out.println("symbol: " + symbol);
 								if (parsed.equals(symbol)) {
-									//									System.out.println("last");
-									//									System.out.println(hornClause);
 									System.out.println("--> true");
 									return true;
-									//									System.out.println("true");
 								} else {
 									agenda.push(temp[1].replaceAll("\\s+",""));
 								}
@@ -216,7 +162,6 @@ public class EntailmentTester {
 		}
 		System.out.println("--> false");
 		return false;
-		//		System.out.println("false");
 	} //END
 
 	/**
